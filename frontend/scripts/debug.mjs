@@ -1,0 +1,10 @@
+import { chromium } from "playwright";
+const browser = await chromium.launch({ headless: true });
+const page = await browser.newPage({ viewport: { width: 1366, height: 900 } });
+page.on("pageerror", (e) => console.log("PAGE ERROR", e.stack));
+page.on("console", (m) => console.log("CONSOLE", m.type(), m.text()));
+page.on("response", (r) => console.log("RESPONSE", r.status(), r.url()));
+await page.goto("http://127.0.0.1:8000/", { waitUntil: "networkidle" });
+console.log(await page.locator("body").innerHTML());
+await page.screenshot({ path: "../data/validation/browser-debug.png" });
+await browser.close();
